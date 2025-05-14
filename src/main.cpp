@@ -7,7 +7,7 @@
 #include "secrets.h"
 #include "utils.h"
 
-const char *target_mac_address = "F4-6D-04-9C-93-F8";
+const char *target_mac_address = "F4:6D:04:9C:93:F8";
 
 // Set web server port number to 80
 WiFiServer web_server(80);
@@ -46,7 +46,7 @@ void setup()
 		C_WIFI_SUBNET_MASK,
 		C_WIFI_PRIMARY_DNS,
 		C_WIFI_SECONDARY_DNS
-	);	
+	);
 
 	web_server.begin();
 }
