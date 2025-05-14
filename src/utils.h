@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UTILS_H
+#define UTILS_H
 
 #include "logger.h"
 #include <WiFi.h>
@@ -33,3 +34,5 @@ class Utils {
         Logger::infoln("IP address: " + WiFi.localIP().toString());
     }
 };
+
+#endif // UTILS_H

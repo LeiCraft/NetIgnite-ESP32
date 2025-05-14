@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LOGGER_H
+#define LOGGER_H
 
 #include <Arduino.h>
 
@@ -71,3 +72,5 @@ class Logger {
         Serial.println(msg);
     }
 };
+
+#endif // LOGGER_H
