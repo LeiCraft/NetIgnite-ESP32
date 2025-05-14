@@ -1,3 +1,4 @@
+#pragma once
 
 #include "logger.h"
 #include <WiFi.h>
@@ -21,15 +22,14 @@ class Utils {
             Logger::infoln("STA Configured");
         }
 
-        Logger::infof("Connecting to %s...", ssid);
+        Logger::infoln("Connecting to " + String(ssid) + "...");
         WiFi.begin(ssid, password);
 
         while (WiFi.status() != WL_CONNECTED) {
             delay(500);
-            Logger::print(".");
         }
         // Print local IP address and start web server
-        Logger::infoln("\nWifi connected.");
-        Logger::infof("IP address: %s\n", WiFi.localIP().toString().c_str());
+        Logger::infoln("Wifi connected.");
+        Logger::infoln("IP address: " + WiFi.localIP().toString());
     }
 };

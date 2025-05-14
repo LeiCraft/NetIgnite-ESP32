@@ -34,21 +34,8 @@ class Logger {
     static void errorln(const String &msg) { logln(LogLevel::ERROR, msg); }
     static void fatalln(const String &msg) { logln(LogLevel::FATAL, msg); }
 
-    static void debugf(const char *fmt, ...) { logf(LogLevel::DEBUG, fmt); }
-    static void infof(const char *fmt, ...) { logf(LogLevel::INFO, fmt); }
-    static void warnf(const char *fmt, ...) { logf(LogLevel::WARN, fmt); }
-    static void errorf(const char *fmt, ...) { logf(LogLevel::ERROR, fmt); }
-    static void fatalf(const char *fmt, ...) { logf(LogLevel::FATAL, fmt); }
-
-
     static void print(const String &msg) { Serial.print(msg); }
     static void println(const String &msg) { Serial.println(msg); }
-    static void printf(const char *fmt, ...) {
-        va_list args;
-        va_start(args, fmt);
-        Serial.printf(fmt, args);
-        va_end(args);
-    }
 
   private:
     static inline LogLevel level;
@@ -82,16 +69,5 @@ class Logger {
 
         Serial.printf("[%s] ", levelToStr(msgLvl));
         Serial.println(msg);
-    }
-
-    static void logf(LogLevel msgLvl, const char *fmt, ...) {
-        if (msgLvl < level) return;
-
-        Serial.printf("[%s] ", levelToStr(msgLvl));
-
-        va_list args;
-        va_start(args, fmt);
-        Serial.printf(fmt, args);
-        va_end(args);
     }
 };
