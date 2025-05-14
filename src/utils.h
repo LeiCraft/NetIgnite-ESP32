@@ -1,0 +1,35 @@
+
+#include "logger.h"
+#include <WiFi.h>
+
+class Utils {
+  public:
+    static void setupWIFI(
+		const char *ssid,
+		const char *password,
+        IPAddress local_IP,
+		IPAddress gateway,
+        IPAddress subnet_mask,
+        IPAddress primary_DNS = (uint32_t)0,
+        IPAddress secondary_DNS = (uint32_t)0
+	) {
+        Logger::infoln("Connecting to Wifi...");
+
+        if (!WiFi.config(local_IP, gateway, subnet_mask, primary_DNS, secondary_DNS)) {
+            Logger::errorln("STA Failed to configure Wifi");
+        } else {
+            Logger::infoln("STA Configured");
+        }
+
+        Logger::infof("Connecting to %s...", ssid);
+        WiFi.begin(ssid, password);
+
+        while (WiFi.status() != WL_CONNECTED) {
+            delay(500);
+            Logger::print(".");
+        }
+        // Print local IP address and start web server
+        Logger::infoln("\nWifi connected.");
+        Logger::infof("IP address: %s\n", WiFi.localIP().toString().c_str());
+    }
+};

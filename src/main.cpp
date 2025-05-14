@@ -1,11 +1,12 @@
 #include <Arduino.h>
-#include <WiFi.h>
+#include <./WiFi.h>
 #include <WiFiUdp.h>
 #include <WakeOnLan.h>
 #include <WebSocketsClient.h>
 
 #include "logger.h"
 #include "secrets.h"
+#include "utils.h"
 
 const char *target_mac_address = "F4-6D-04-9C-93-F8";
 
@@ -36,23 +37,17 @@ void setup()
 	Logger::init(115200);
 	Logger::setLevel(LogLevel::INFO);
 
-	Serial.println("Starting...");
+	Logger::infoln("Starting...");
 
-	// Configures static IP address
-	if (!WiFi.config(C_WIFI_LOCAL_IP, C_WIFI_GATEWAY_IP, C_WIFI_SUBNET_MASK, C_WIFI_PRIMARY_DNS, C_WIFI_SECONDARY_DNS))
-	{
-		Serial.println("[Error] STA Failed to configure");
-	}
-
-	Serial.printf("Connecting to "); Serial.print(C_WIFI_SSID); Serial.print("...");
-	WiFi.begin(C_WIFI_SSID, C_WIFI_PASSWORD);
-	while (WiFi.status() != WL_CONNECTED) {
-		delay(500);
-		Serial.print(".");
-	}
-	// Print local IP address and start web server
-	Serial.println("\nWiFi connected.");
-	Serial.printf("IP address: %s\n", WiFi.localIP().toString().c_str());
+	Utils::setupWIFI(
+		C_WIFI_SSID,
+		C_WIFI_PASSWORD,
+		C_WIFI_LOCAL_IP,
+		C_WIFI_GATEWAY_IP,
+		C_WIFI_SUBNET_MASK,
+		C_WIFI_PRIMARY_DNS,
+		C_WIFI_SECONDARY_DNS
+	);	
 
 	web_server.begin();
 }
