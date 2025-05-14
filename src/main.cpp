@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <./WiFi.h>
 #include <WiFiUdp.h>
 #include <WakeOnLan.h>
 #include <WebSocketsClient.h>
