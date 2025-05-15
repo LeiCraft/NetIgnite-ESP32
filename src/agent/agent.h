@@ -22,18 +22,24 @@ class Agent {
 
     static void setup(const AgentConfig& config) {
 
-        if (strlen(config.authId) == 0 || strlen(config.authSecret) == 0) {
+        host = config.host;
+        port = config.port;
+        useSSL = config.useSSL;
+        authId = config.authId;
+        authSecret = config.authSecret;
+
+        if (strlen(authId) == 0 || strlen(authSecret) == 0) {
             Logger::errorln("Missing credentials!");
             return;
         }
 
-        const String endpoint = "/api/agent-control-service?id=" + Utils::utf8ToHexStr(config.authId) + "&secret=" + Utils::utf8ToHexStr(config.authSecret);
-
-        if (config.useSSL) {
-            webSocket.beginSSL(config.host, config.port, endpoint);
+        if (useSSL) {
+            webSocket.beginSSL(host, port, "/api/agent-control-service");
         } else {
-            webSocket.begin(config.host, config.port, endpoint);
+            webSocket.begin(host, port, "/api/agent-control-service");
         }
+
+        webSocket.setAuthorization(authId, authSecret);
 
         webSocket.onEvent(webSocketEvent);
     }
@@ -43,6 +49,12 @@ class Agent {
     }
 
   private:
+
+    static inline const char* host = nullptr;
+    static inline uint16_t port = 0;
+    static inline bool useSSL = false;
+    static inline const char* authId = nullptr;
+    static inline const char* authSecret = nullptr;
 
     static void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
 
