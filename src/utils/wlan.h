@@ -3,7 +3,7 @@
 
 #include <WiFi.h>
 
-#include "logger.h"
+#include "utils/logger.h"
 
 struct WLANConfig {
     const char* ssid;

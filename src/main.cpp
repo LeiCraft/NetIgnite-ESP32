@@ -3,10 +3,10 @@
 #include <WakeOnLan.h>
 #include <WebSocketsClient.h>
 
-#include "logger.h"
-#include "secrets.h"
-#include "wlan.h"
-#include "agent.h"
+#include "config/config.h"
+#include "utils/logger.h"
+#include "utils/wlan.h"
+#include "agent/agent.h"
 
 
 WebSocketsClient webSocket;

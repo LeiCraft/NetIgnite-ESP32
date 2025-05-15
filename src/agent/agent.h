@@ -3,9 +3,9 @@
 
 #include <WebSocketsClient.h>
 
-#include "logger.h"
-#include "wol.h"
-#include "utils.h"
+#include "utils/logger.h"
+#include "utils/wol.h"
+#include "utils/utils.h"
 
 extern WebSocketsClient webSocket;
 
