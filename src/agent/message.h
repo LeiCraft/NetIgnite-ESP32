@@ -13,7 +13,7 @@ class AgentMessage {
     const uint32_t id;
     JsonDocument payload;
 
-    AgentMessage(const String& cmd, uint32_t id, const JsonDocument& payloadDoc)
+    AgentMessage(const String &cmd, uint32_t id, const JsonDocument &payloadDoc)
         : cmd(cmd), id(id) {
         this->payload.set(payloadDoc);
     }
@@ -28,7 +28,7 @@ class AgentMessage {
         return encodedString;
     }
 
-    static bool decode(const String& message, AgentMessage*& result) {
+    static bool decode(const String &message, AgentMessage *&result) {
 
         result = nullptr;
 

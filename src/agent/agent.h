@@ -93,6 +93,8 @@ class Agent {
                 }
 
                 delete message;
+                message = nullptr;
+                
                 break;
             }
             
