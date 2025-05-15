@@ -1,3 +1,6 @@
+#ifndef SECRETS_H
+#define SECRETS_H
+
 
 #define C_WIFI_SSID "WIFI_SSID"
 #define C_WIFI_PASSWORD "WIFI_PASSWORD"
@@ -7,5 +10,15 @@
 #define C_WIFI_SUBNET_MASK IPAddress(255, 255, 255, 0)
 
 // Leave 0 to use the default DNS server the router advertises
-#define C_WIFI_PRIMARY_DNS (uint32_t)0
-#define C_WIFI_SECONDARY_DNS (uint32_t)0
+#define C_WIFI_PRIMARY_DNS (uint32_t) 0
+#define C_WIFI_SECONDARY_DNS (uint32_t) 0
+
+#define C_CONTROL_SERVER_HOST "example.com"
+#define C_CONTROL_SERVER_PORT (uint16_t) 80
+#define C_CONTROL_SERVER_USE_SSL (bool) false
+
+#define C_CONTROL_SERVER_AUTH_ID "AUTH_ID"
+#define C_CONTROL_SERVER_AUTH_SECRET "AUTH_SECRET"
+
+
+#endif

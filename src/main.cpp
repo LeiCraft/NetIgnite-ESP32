@@ -2,18 +2,17 @@
 #include <WiFiUdp.h>
 #include <WakeOnLan.h>
 #include <WebSocketsClient.h>
-#include <WiFiClientSecure.h>
 
 #include "logger.h"
 #include "secrets.h"
-#include "utils.h"
-#include "control-server.h"
+#include "wlan.h"
+#include "agent.h"
 
 
 WebSocketsClient webSocket;
 
-WiFiUDP UDP;
-WakeOnLan WOL(UDP);
+WiFiUDP UDPClient;
+WakeOnLan WakeOnLanClient(UDPClient);
 
 
 void setup()
@@ -23,7 +22,7 @@ void setup()
 
 	Logger::infoln("Starting...");
 
-	Utils::setupWIFI(
+	WLAN::setup(
 		C_WIFI_SSID,
 		C_WIFI_PASSWORD,
 		C_WIFI_LOCAL_IP,
@@ -33,7 +32,13 @@ void setup()
 		C_WIFI_SECONDARY_DNS
 	);
 
-	setupWebSocket();
+	Agent::setup(
+		C_CONTROL_SERVER_HOST,
+		C_CONTROL_SERVER_PORT,
+		C_CONTROL_SERVER_USE_SSL,
+		C_CONTROL_SERVER_AUTH_ID,
+		C_CONTROL_SERVER_AUTH_SECRET
+	);
 }
 
 void loop()
