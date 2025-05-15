@@ -39,10 +39,12 @@ class WLAN {
 
         Logger::infoln("Connecting to " + String(ssid) + "...");
         WiFi.begin(ssid, password);
+        
+        WiFi.setAutoReconnect(false); // Disable auto reconnect to handle it manually
     }
 
     static void loop() {
-        if (shouldReconnect && millis() - lastDisconnectTime >= reconnectInterval) {
+        if (shouldReconnect && (millis() >= lastDisconnectTime + reconnectInterval)) {
             Logger::infoln("Trying to Reconnect to WiFi...");
             WiFi.begin(ssid, password);
             shouldReconnect = false;  // reset flag
