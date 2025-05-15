@@ -73,7 +73,7 @@ class Agent {
                 Logger::infoln("Websocket Connected to " + String(host) + ":" + String(port) + " SSL: " + String(useSSL ? "true" : "false"));
                 break;
 
-            case WStype_TEXT:
+            case WStype_TEXT: {
 
                 AgentMessage* message = nullptr;
 
@@ -93,9 +93,9 @@ class Agent {
                 }
 
                 delete message;
-
                 break;
-
+            }
+            
             case WStype_ERROR:
 
                 Logger::errorln("Websocket Error: " + String((char*)payload));

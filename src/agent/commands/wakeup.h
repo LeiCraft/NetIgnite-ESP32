@@ -9,9 +9,7 @@ JsonDocument wakeup(JsonDocument &input) {
 
     JsonDocument response;
 
-    if (!input.containsKey("macAddress") || !input["macAddress"].is<const char *>() || 
-        !input.containsKey("port") || !input["port"].is<uint16_t>()
-    ) {
+    if (!input["macAddress"].is<const char *>() || !input["port"].is<uint16_t>()) {
         response["status"] = "ERROR";
         response["message"] = "Missing or invalid payload";
         return response;

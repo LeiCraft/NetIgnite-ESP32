@@ -51,7 +51,7 @@ class AgentMessage {
             return false;
         }
 
-        DynamicJsonDocument doc(1024);  // or appropriate size
+        JsonDocument doc;  // or appropriate size
         DeserializationError error = deserializeJson(doc, jsonStr);
         if (error || !doc.is<JsonObject>()) {
             return false;
