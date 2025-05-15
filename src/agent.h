@@ -16,7 +16,7 @@ class Agent {
 
         webSocket.setReconnectInterval(60000); // 60 seconds
 
-        const String endpoint = "/api/control-service?id=" + Utils::utf8ToHexStr(authId) + "&secret=" + Utils::utf8ToHexStr(authSecret);
+        const String endpoint = "/api/agent-control-service?id=" + Utils::utf8ToHexStr(authId) + "&secret=" + Utils::utf8ToHexStr(authSecret);
 
         if (useSSL) {
             webSocket.beginSSL(host, port, endpoint);
