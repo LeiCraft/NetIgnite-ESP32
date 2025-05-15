@@ -68,7 +68,7 @@ class Agent {
 
             case WStype_CONNECTED:
 
-                Logger::infoln("Websocket Connected! to url: " + String((char*)payload));
+                Logger::infoln("Websocket Connected to " + String(host) + ":" + String(port) + " SSL: " + String(useSSL ? "true" : "false"));
                 break;
 
             case WStype_TEXT:
