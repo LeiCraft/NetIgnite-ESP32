@@ -9,22 +9,37 @@
 
 extern WebSocketsClient webSocket;
 
+struct AgentConfig {
+    const char* host;
+    uint16_t port;
+    bool useSSL;
+    const char* authId;
+    const char* authSecret;
+};
+
 class Agent {
   public:
 
-    static void setup(const String host, const uint16_t port, const bool useSSL, const char* authId, const char* authSecret) {
+    static void setup(const AgentConfig& config) {
 
-        webSocket.setReconnectInterval(60000); // 60 seconds
+        if (strlen(config.authId) == 0 || strlen(config.authSecret) == 0) {
+            Logger::errorln("Missing credentials!");
+            return;
+        }
 
-        const String endpoint = "/api/agent-control-service?id=" + Utils::utf8ToHexStr(authId) + "&secret=" + Utils::utf8ToHexStr(authSecret);
+        const String endpoint = "/api/agent-control-service?id=" + Utils::utf8ToHexStr(config.authId) + "&secret=" + Utils::utf8ToHexStr(config.authSecret);
 
-        if (useSSL) {
-            webSocket.beginSSL(host, port, endpoint);
+        if (config.useSSL) {
+            webSocket.beginSSL(config.host, config.port, endpoint);
         } else {
-            webSocket.begin(host, port, endpoint);
+            webSocket.begin(config.host, config.port, endpoint);
         }
 
         webSocket.onEvent(webSocketEvent);
+    }
+
+    static void loop() {
+        webSocket.loop();
     }
 
   private:
@@ -34,7 +49,9 @@ class Agent {
         switch(type) {
             case WStype_DISCONNECTED:
 
-                Logger::infoln("Websocket Disconnected!");
+                webSocket.setReconnectInterval(60000); // 60 seconds
+
+                Logger::infoln("Websocket Disconnected! Retrying in 60 seconds...");
                 break;
 
             case WStype_CONNECTED:

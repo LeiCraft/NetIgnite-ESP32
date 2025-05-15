@@ -10,9 +10,27 @@
 
 
 WebSocketsClient webSocket;
-
 WiFiUDP UDPClient;
 WakeOnLan WakeOnLanClient(UDPClient);
+
+
+WLANConfig wlanConfig = {
+	C_WIFI_SSID,
+	C_WIFI_PASSWORD,
+	C_WIFI_LOCAL_IP,
+	C_WIFI_GATEWAY_IP,
+	C_WIFI_SUBNET_MASK,
+	C_WIFI_PRIMARY_DNS,
+	C_WIFI_SECONDARY_DNS
+};
+
+AgentConfig agentConfig = {
+	C_CONTROL_SERVER_HOST,
+	C_CONTROL_SERVER_PORT,
+	C_CONTROL_SERVER_USE_SSL,
+	C_CONTROL_SERVER_AUTH_ID,
+	C_CONTROL_SERVER_AUTH_SECRET
+};
 
 
 void setup()
@@ -22,26 +40,15 @@ void setup()
 
 	Logger::infoln("Starting...");
 
-	WLAN::setup(
-		C_WIFI_SSID,
-		C_WIFI_PASSWORD,
-		C_WIFI_LOCAL_IP,
-		C_WIFI_GATEWAY_IP,
-		C_WIFI_SUBNET_MASK,
-		C_WIFI_PRIMARY_DNS,
-		C_WIFI_SECONDARY_DNS
-	);
+	WLAN::setup(wlanConfig);
 
-	Agent::setup(
-		C_CONTROL_SERVER_HOST,
-		C_CONTROL_SERVER_PORT,
-		C_CONTROL_SERVER_USE_SSL,
-		C_CONTROL_SERVER_AUTH_ID,
-		C_CONTROL_SERVER_AUTH_SECRET
-	);
+	delay(1000);
+
+	Agent::setup(agentConfig);
 }
 
 void loop()
 {
-	webSocket.loop();
+	WLAN::loop();
+	Agent::loop();
 }
