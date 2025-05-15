@@ -3,6 +3,7 @@
 
 #include "utils/logger.h"
 #include <WiFi.h>
+#include <regex.h>
 
 class Utils {
   public:
@@ -17,6 +18,21 @@ class Utils {
         }
 
         return hexStr;
+    }
+
+    static bool matchRegex(const char* str, const char* pattern) {
+        if (!str || !pattern) return false;
+
+        regex_t regex;
+        if (regcomp(&regex, pattern, REG_EXTENDED | REG_NOSUB) != 0) {
+            // regex compilation failed
+            return false;
+        }
+
+        int result = regexec(&regex, str, 0, NULL, 0);
+        regfree(&regex);
+        return result == 0;
+
     }
 };
 
