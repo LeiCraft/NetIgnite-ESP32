@@ -30,8 +30,9 @@ class WOL {
 	static bool isValidMacAddress(const char *macAddress) {
 		if (!macAddress) return false;
 
-		const char *pattern = "^([0-9A-Fa-f]{2})([:-])(?:[0-9A-Fa-f]{2}\2){4}[0-9A-Fa-f]{2}$";
-		return Utils::matchRegex(macAddress, pattern);
+		const char* colonPattern = "^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$";
+    	const char* dashPattern  = "^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$";
+		return (Utils::matchRegex(macAddress, colonPattern) || Utils::matchRegex(macAddress, dashPattern));
 	}
 
 	static bool isValidPort(uint16_t port) {
