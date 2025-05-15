@@ -12,7 +12,7 @@ class Utils {
 
         for (int i = 0; str[i] != '\0'; i++) {
             char hex[3];
-            sprintf(hex, "%02X", str[i]);
+            snprintf(hex, sizeof(hex), "%02X", str[i]);
             hexStr += hex;
         }
 
