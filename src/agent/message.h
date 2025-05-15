@@ -4,68 +4,63 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <limits.h>
+#include <cstring>
 
 class AgentMessage {
-public:
-    const char* cmd;
+  public:
+
+    const String cmd;
     const uint32_t id;
     JsonDocument payload;
 
-    AgentMessage(const char* cmd, uint32_t id, const JsonDocument& payloadDoc)
-        : id(id) {
-        // Duplicate cmd string to ensure it lives with the object
-        this->cmd = strdup(cmd);
+    AgentMessage(const String& cmd, uint32_t id, const JsonDocument& payloadDoc)
+        : cmd(cmd), id(id) {
         this->payload.set(payloadDoc);
     }
 
-    ~AgentMessage() {
-        free((void*)cmd); // free strdup-ed memory
-    }
-
     String encode() const {
-        String encodedString = String(cmd) + ":" + String(id) + ":";
+        String encodedString = cmd + ":" + String(id) + ":";
 
         String serializedPayload;
-        serializeJson(this->payload, serializedPayload);
+        serializeJson(payload, serializedPayload);
 
         encodedString += serializedPayload;
         return encodedString;
     }
 
-    static AgentMessage* decode(const char* message) {
-        if (!message) return nullptr;
+    static bool decode(const String& message, AgentMessage*& result) {
 
-        String msg = String(message);
-        int firstColon = msg.indexOf(':');
-        int secondColon = msg.indexOf(':', firstColon + 1);
+        result = nullptr;
+
+        if (message.length() == 0) return false;
+
+        int firstColon = message.indexOf(':');
+        int secondColon = message.indexOf(':', firstColon + 1);
 
         if (firstColon == -1 || secondColon == -1) {
-            return nullptr; // Invalid format
+            return false;
         }
 
-        String cmd = msg.substring(0, firstColon);
-        String idStr = msg.substring(firstColon + 1, secondColon);
-        String json = msg.substring(secondColon + 1);
+        String cmdStr = message.substring(0, firstColon);
+        String idStr = message.substring(firstColon + 1, secondColon);
+        String jsonStr = message.substring(secondColon + 1);
 
         char* endPtr = nullptr;
         unsigned long parsedId = strtoul(idStr.c_str(), &endPtr, 10);
         if (endPtr == idStr.c_str() || parsedId > 0xFFFFFFFFUL) {
-            return nullptr; // Invalid or out-of-range ID
+            return false;
         }
 
-        JsonDocument doc;
-        DeserializationError error = deserializeJson(doc, json);
+        DynamicJsonDocument doc(1024);  // or appropriate size
+        DeserializationError error = deserializeJson(doc, jsonStr);
         if (error || !doc.is<JsonObject>()) {
-            return nullptr;
+            return false;
         }
 
-        return new AgentMessage(cmd.c_str(), static_cast<uint32_t>(parsedId), doc);
+        result = new AgentMessage(cmdStr, static_cast<uint32_t>(parsedId), doc);
+        return true;
     }
 
-private:
-    // Prevent copying to avoid memory issues with strdup/free
-    AgentMessage(const AgentMessage&) = delete;
-    AgentMessage& operator=(const AgentMessage&) = delete;
 };
 
 #endif // MESSAGE_H

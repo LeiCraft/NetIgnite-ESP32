@@ -6,6 +6,8 @@
 #include "utils/logger.h"
 #include "utils/wol.h"
 #include "utils/utils.h"
+#include "agent/message.h"
+#include "agent/cmd_registry.h"
 
 extern WebSocketsClient webSocket;
 
@@ -73,7 +75,24 @@ class Agent {
 
             case WStype_TEXT:
 
-                Logger::infoln("Websocket Message: " + String((char*)payload));
+                AgentMessage* message = nullptr;
+
+                if (AgentMessage::decode((const char*)payload, message)) {
+                    
+                    JsonDocument responsePayload;
+
+                    if (!CommandRegistry::executeCommand(message->cmd.c_str(), message->payload, responsePayload)) {
+                        responsePayload["status"] = "ERROR";
+                        responsePayload["message"] = "Unknown command";
+                    }
+
+                    const AgentMessage responseMessage(message->cmd, message->id, responsePayload);
+                    
+                    String encodedResponse = responseMessage.encode();
+                    webSocket.sendTXT(encodedResponse);
+                }
+
+                delete message;
 
                 break;
 

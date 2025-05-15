@@ -6,26 +6,40 @@
 
 #include "commands/wakeup.h"
 
-using FuncPtr = JsonDocument (*)(JsonDocument& doc);
+using FuncPtr = JsonDocument (*)(JsonDocument& payload);
 
 struct CommandEntry {
     const char *name;
     FuncPtr handler;
 };
 
-constexpr CommandEntry CommandMap[] = {
-    {"WAKEUP", wakeup}
-};
+class CommandRegistry {
+  public:
 
-FuncPtr getCommandFunc(const char* cmd) {
-    if (!cmd) return nullptr;
-    for (const auto& entry : CommandMap) {
-        if (strcmp(entry.name, cmd) == 0) {
-            return entry.handler;
+    static const CommandEntry* getCommand(const char* cmd) {
+        if (!cmd) return nullptr;
+        for (const auto& entry : registry) {
+            if (strcmp(entry.name, cmd) == 0) {
+                return &entry;
+            }
         }
+        return nullptr;
     }
-    return nullptr;
-}
+
+    static bool executeCommand(const char* cmd, JsonDocument& payload, JsonDocument& result) {
+        const CommandEntry* entry = getCommand(cmd);
+        if (entry) {
+            result = entry->handler(payload);
+            return true;
+        }
+        return false;
+    }
+
+  private:
+    static const inline CommandEntry registry[] = {
+        {"WAKEUP", wakeup}
+    };
+};
 
 
 #endif // CMD_REGISTRY_H
