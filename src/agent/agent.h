@@ -58,7 +58,7 @@ class Agent {
     static inline const char* authId = nullptr;
     static inline const char* authSecret = nullptr;
 
-    static void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
+    static void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
 
         switch(type) {
             case WStype_DISCONNECTED:

@@ -5,7 +5,7 @@
 #include <ArduinoJson.h>
 #include "utils/wol.h"
 
-JsonDocument wakeup(JsonDocument &input) {
+JsonDocument wakeup(JsonDocument& input) {
 
     JsonDocument response;
 
