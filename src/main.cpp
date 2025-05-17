@@ -6,6 +6,7 @@
 #include "config/config.h"
 #include "utils/logger.h"
 #include "utils/wlan.h"
+#include "utils/utils.h"
 #include "agent/agent.h"
 
 
@@ -39,10 +40,12 @@ void setup()
 	Logger::setLevel(LogLevel::INFO);
 
 	Logger::infoln("Starting...");
-
+	
 	WLAN::setup(wlanConfig);
 
 	delay(1000);
+
+	Utils::setClock();
 
 	Agent::setup(agentConfig);
 }

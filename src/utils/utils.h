@@ -8,6 +8,26 @@
 class Utils {
   public:
 
+    static void setClock() {
+        configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+
+        Logger::info(F("Waiting for NTP time sync: "));
+        time_t nowSecs = time(nullptr);
+        while(nowSecs < 8 * 3600 * 2) {
+            delay(500);
+            Logger::print(F("."));
+            yield();
+            nowSecs = time(nullptr);
+        }
+
+        Logger::println("");
+        struct tm timeinfo;
+        gmtime_r(&nowSecs, &timeinfo);
+        Logger::info(F("Current time: "));
+        Logger::info(asctime(&timeinfo));
+    }
+
+
     static String utf8ToHexStr(const char* str) {
         String hexStr = "";
 

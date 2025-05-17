@@ -36,7 +36,7 @@ class Agent {
         }
 
         if (useSSL) {
-            webSocket.beginSSL(host, port, "/api/agent-control-service");
+            webSocket.beginSslWithBundle(host, port, "/api/agent-control-service");
         } else {
             webSocket.begin(host, port, "/api/agent-control-service");
         }
