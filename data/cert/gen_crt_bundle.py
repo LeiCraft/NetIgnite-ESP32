@@ -192,7 +192,7 @@ def main():
     parser.add_argument('--input', '-i', nargs='+', required=True,
                         help='Paths to the custom certificate folders or files to parse, parses all .pem or .der files')
     parser.add_argument('--filter', '-f', help='Path to CSV-file where the second columns contains the name of the certificates \
-                        that should be included from cacrt_all.pem')
+                        that should be included from data/cert/cacrt_all.pem')
 
     args = parser.parse_args()
 
@@ -202,7 +202,7 @@ def main():
 
     for path in args.input:
         if os.path.isfile(path):
-            if os.path.basename(path) == 'cacrt_all.pem' and args.filter:
+            if os.path.basename(path) == 'data/cert/cacrt_all.pem' and args.filter:
                 bundle.add_with_filter(path, args.filter)
             else:
                 bundle.add_from_file(path)
