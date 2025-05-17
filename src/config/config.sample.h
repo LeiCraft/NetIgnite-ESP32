@@ -9,9 +9,8 @@
 #define C_WIFI_GATEWAY_IP IPAddress(192, 168, 1, 1)
 #define C_WIFI_SUBNET_MASK IPAddress(255, 255, 255, 0)
 
-// Leave 0 to use the default DNS server the router advertises
-#define C_WIFI_PRIMARY_DNS (uint32_t) 0
-#define C_WIFI_SECONDARY_DNS (uint32_t) 0
+#define C_WIFI_PRIMARY_DNS IPAddress(1, 1, 1, 1)
+#define C_WIFI_SECONDARY_DNS IPAddress(1, 0, 0, 1)
 
 #define C_CONTROL_SERVER_HOST "example.com"
 #define C_CONTROL_SERVER_PORT (uint16_t) 80
