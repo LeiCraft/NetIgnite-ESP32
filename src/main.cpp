@@ -9,7 +9,6 @@
 #include "utils/utils.h"
 #include "agent/agent.h"
 
-
 WebSocketsClient webSocket;
 WiFiUDP UDPClient;
 WakeOnLan WakeOnLanClient(UDPClient);

@@ -9,6 +9,9 @@
 #include "agent/message.h"
 #include "agent/cmd_registry.h"
 
+extern const uint8_t rootca_crt_bundle_start[] asm(
+    "_binary_data_cert_x509_crt_bundle_bin_start");
+
 extern WebSocketsClient webSocket;
 
 struct AgentConfig {
@@ -36,7 +39,7 @@ class Agent {
         }
 
         if (useSSL) {
-            webSocket.beginSslWithBundle(host, port, "/api/agent-control-service", NULL, "");
+            webSocket.beginSslWithBundle(host, port, "/api/agent-control-service", rootca_crt_bundle_start, "");
         } else {
             webSocket.begin(host, port, "/api/agent-control-service");
         }
