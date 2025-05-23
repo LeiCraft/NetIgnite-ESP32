@@ -5,6 +5,7 @@
 #include <ArduinoJson.h>
 
 #include "commands/wakeup.h"
+#include "commands/heartbeat.h"
 
 using FuncPtr = JsonDocument (*)(JsonDocument& payload);
 
@@ -37,7 +38,8 @@ class CommandRegistry {
 
   private:
     static const inline CommandEntry registry[] = {
-        {"WAKEUP", wakeup}
+        {"WAKEUP", wakeup},
+        {"HEARTBEAT", heartbeat},
     };
 };
 
