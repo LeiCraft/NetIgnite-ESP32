@@ -23,7 +23,7 @@ class Utils {
         Logger::println("");
         struct tm timeinfo;
         gmtime_r(&nowSecs, &timeinfo);
-        Logger::info(F("Current time: "));
+        Logger::info(F("Current UTC time: "));
         Logger::print(asctime(&timeinfo));
     }
 
