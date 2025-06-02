@@ -33,10 +33,11 @@ class WLAN {
             Logger::infoln("STA Configured");
         }
 
-        if (!WiFi.enableIpV6()) {
-            Logger::errorln("Failed to enable IPv6 on WiFi");
-        } else {
+        if (WiFi.enableIpV6()) {
             Logger::infoln("IPv6 enabled on WiFi");
+        } else {
+            Logger::errorln("Failed to enable IPv6 on WiFi");
+
         }
 
         WiFi.onEvent(onWiFiConnect, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_CONNECTED);
