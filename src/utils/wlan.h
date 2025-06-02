@@ -72,11 +72,23 @@ class WLAN {
             Logger::errorln("Failed to enable IPv6 on WiFi");
         }
 
-        delay(500);
-
         Logger::infoln("Got IP address!");
         Logger::infoln("IP address: " + WiFi.localIP().toString());
-        Logger::infoln("IPv6 address: " + WiFi.localIPv6().toString());
+
+        esp_netif_t* netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
+
+        esp_ip6_addr_t ip6_addrs[CONFIG_LWIP_IPV6_NUM_ADDRESSES];
+        int num_ipv6_addrs = esp_netif_get_all_ip6(netif, ip6_addrs);
+        
+        // Optional: print or process the IPv6 addresses
+        for (int i = 0; i < num_ipv6_addrs; i++) {
+            
+            String ip_str = IPv6Address(ip6_addrs[i].addr).toString();
+
+            Logger::infoln("IPv6 address: " + ip_str);
+        }
+
+
     }
 
     static void onWiFiDisconnect(WiFiEvent_t event, WiFiEventInfo_t info) {

@@ -1,6 +1,7 @@
 #ifndef INPUT_VALIDATION_H
 #define INPUT_VALIDATION_H
-#include "utils/utils.h"
+
+#include "utils/regexp.h"
 
 class InputValidation {
   public:
@@ -9,14 +10,14 @@ class InputValidation {
         if (!macAddress) return false;
 
         const char* pattern = "^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$";
-        return Utils::matchRegex(macAddress, pattern);
+        return RegExp::match(macAddress, pattern);
     }
 
     static bool macAddressColon(const char *macAddress) {
         if (!macAddress) return false;
 
         const char* pattern = "^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$";
-        return Utils::matchRegex(macAddress, pattern);
+        return RegExp::match(macAddress, pattern);
     }
 
     static bool macAddress(const char *macAddress) {
