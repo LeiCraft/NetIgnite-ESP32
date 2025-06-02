@@ -33,6 +33,12 @@ class WLAN {
             Logger::infoln("STA Configured");
         }
 
+        if (!WiFi.enableIpV6()) {
+            Logger::errorln("Failed to enable IPv6 on WiFi");
+        } else {
+            Logger::infoln("IPv6 enabled on WiFi");
+        }
+
         WiFi.onEvent(onWiFiConnect, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_CONNECTED);
         WiFi.onEvent(onWiFiGotIP, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
         WiFi.onEvent(onWiFiDisconnect, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
@@ -67,6 +73,7 @@ class WLAN {
     static void onWiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
         Logger::infoln("Wifi connected.");
         Logger::infoln("IP address: " + WiFi.localIP().toString());
+        Logger::infoln("IPv6 address: " + WiFi.localIPv6().toString());
     }
 
     static void onWiFiDisconnect(WiFiEvent_t event, WiFiEventInfo_t info) {
