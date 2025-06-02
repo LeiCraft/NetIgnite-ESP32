@@ -39,7 +39,7 @@ class Logger {
     static void println(const String& msg) { Serial.println(msg); }
 
   private:
-    static inline LogLevel level;
+    static inline LogLevel level = LogLevel::INFO;
 
     static const char* levelToStr(LogLevel lvl) {
         switch (lvl) {
@@ -59,14 +59,14 @@ class Logger {
     }
 
     static void log(LogLevel msgLvl, const String& msg) {
-        if (msgLvl < level) return;
+        if (msgLvl > level) return;
         
         Serial.printf("[%s] ", levelToStr(msgLvl));
         Serial.print(msg);
     }
 
     static void logln(LogLevel msgLvl, const String& msg) {
-        if (msgLvl < level) return;
+        if (msgLvl > level) return;
 
         Serial.printf("[%s] ", levelToStr(msgLvl));
         Serial.println(msg);
