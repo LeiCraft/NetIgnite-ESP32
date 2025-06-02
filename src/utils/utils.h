@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include "utils/logger.h"
+#include "utils/inputValidation.h"
 #include <WiFi.h>
 #include <regex.h>
 
@@ -53,6 +54,43 @@ class Utils {
         regfree(&regex);
         return result == 0;
 
+    }
+
+    static char* macToLinkLocalIPv6(const char* macStr) {
+        
+        if (!macStr) return nullptr;
+
+        // Convert MAC string with colons or dashes to byte array
+        uint8_t mac[6];
+        if (InputValidation::macAddressColon(macStr)) {
+            sscanf(macStr, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5]);
+        } else if (InputValidation::macAddressDashed(macStr)) {
+            sscanf(macStr, "%hhx-%hhx-%hhx-%hhx-%hhx-%hhx", &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5]);
+        } else {
+            return nullptr;
+        }
+
+        char buffer[40];
+
+        uint8_t eui64[8];
+        eui64[0] = mac[0] ^ 0x02;
+        eui64[1] = mac[1];
+        eui64[2] = mac[2];
+        eui64[3] = 0xFF;
+        eui64[4] = 0xFE;
+        eui64[5] = mac[3];
+        eui64[6] = mac[4];
+        eui64[7] = mac[5];
+
+        sprintf(buffer,
+            "fe80::%02x%02x:%02x%02x:%02x%02x:%02x%02x",
+            eui64[0], eui64[1],  // first 16 bits
+            eui64[2], eui64[3],  // second 16 bits
+            eui64[4], eui64[5],  // third 16 bits
+            eui64[6], eui64[7]   // fourth 16 bits
+        );
+
+        return strdup(buffer);
     }
 };
 

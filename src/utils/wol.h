@@ -4,7 +4,7 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <WakeOnLan.h>
-
+#include "utils/inputValidation.h"
 #include "utils/utils.h"
 
 extern WakeOnLan WakeOnLanClient;
@@ -14,7 +14,7 @@ class WOL {
 
 	static bool wakeup(const char *target_mac_address, const uint16_t port) {
 
-		if (!isValidMacAddress(target_mac_address) || !isValidPort(port)) {
+		if (!InputValidation::macAddress(target_mac_address) || !InputValidation::port(port)) {
 			return false;
 		}
 
@@ -23,20 +23,6 @@ class WOL {
 		WakeOnLanClient.sendMagicPacket(target_mac_address, port);
 
 		return true;
-	}
-
-  private:
-
-	static bool isValidMacAddress(const char *macAddress) {
-		if (!macAddress) return false;
-
-		const char* colonPattern = "^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$";
-    	const char* dashPattern  = "^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$";
-		return (Utils::matchRegex(macAddress, colonPattern) || Utils::matchRegex(macAddress, dashPattern));
-	}
-
-	static bool isValidPort(uint16_t port) {
-		return port > 0 && port <= 65535;
 	}
 
 };
