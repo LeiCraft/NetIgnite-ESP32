@@ -13,6 +13,7 @@ WebSocketsClient webSocket;
 WiFiUDP UDPClient;
 WakeOnLan WakeOnLanClient(UDPClient);
 
+// TaskHandle_t arpTaskHandle;
 
 WLANConfig wlanConfig = {
 	C_WIFI_SSID,
@@ -47,7 +48,11 @@ void setup()
 	Utils::setClock();
 
 	Agent::setup(agentConfig);
+
+	// ARP::init();
+	// xTaskCreatePinnedToCore(checkARP, "CheckARP", 4096, NULL, 1, &arpTaskHandle, 1);
 }
+ 
 
 void loop()
 {
