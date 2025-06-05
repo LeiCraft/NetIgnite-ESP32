@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include "utils/wol.h"
 
 JsonDocument heartbeat(JsonDocument& input) {
 

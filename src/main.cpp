@@ -8,12 +8,13 @@
 #include "utils/wlan.h"
 #include "utils/utils.h"
 #include "agent/agent.h"
+#include "utils/icmp.h"
 
 WebSocketsClient webSocket;
 WiFiUDP UDPClient;
 WakeOnLan WakeOnLanClient(UDPClient);
 
-// TaskHandle_t arpTaskHandle;
+TaskHandle_t pingTaskHandle;
 
 WLANConfig wlanConfig = {
 	C_WIFI_SSID,
@@ -49,8 +50,7 @@ void setup()
 
 	Agent::setup(agentConfig);
 
-	// ARP::init();
-	// xTaskCreatePinnedToCore(checkARP, "CheckARP", 4096, NULL, 1, &arpTaskHandle, 1);
+	xTaskCreatePinnedToCore(pingTask, "Ping", 4096, NULL, 1, &pingTaskHandle, 1);
 }
  
 
