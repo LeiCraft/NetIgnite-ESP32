@@ -6,6 +6,7 @@
 
 #include "commands/wakeup.h"
 #include "commands/heartbeat.h"
+#include "commands/get_status.h"
 
 using FuncPtr = JsonDocument (*)(JsonDocument& payload);
 
@@ -40,6 +41,7 @@ class CommandRegistry {
     static const inline CommandEntry registry[] = {
         {"WAKEUP", wakeup},
         {"HEARTBEAT", heartbeat},
+        {"GET_STATUS", get_status},
     };
 };
 
