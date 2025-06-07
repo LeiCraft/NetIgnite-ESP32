@@ -113,5 +113,27 @@ class ICMP {
 
 };
 
+void pingTask(void *pvParameters) {
+    // This task is used to run the ping process
+    // It will be suspended until the ping process is done
+    while (true) {
+
+        ICMP::ping(IPAddress(192, 168, 2, 1), 1); // Example IPv4 address
+
+
+        IPv6Address ip_addr;
+        // ip_addr.fromString("FE80:0000:0000:0000:7CF5:9C9D:777A:27B7");
+        // ip_addr.fromString("FE80:0000:0000:0000:9854:f4ff:fe4d:c80e");
+        // ip_addr.fromString("FE80:0000:0000:0000:0000:0000:0000:0001");
+        // ip_addr.fromString("fe80:0000:0000:0000:9654:c5ff:fee8:6c5c");
+        ip_addr.fromString("fe80:0000:0000:0000:9654:c5ff:fee8:6c5c");
+
+        // ip_addr.fromString("2001:4860:4860:0000:0000:0000:0000:8844");
+
+        ICMP::ping(ip_addr, 1); // Example IPv6 address
+
+        vTaskDelay(pdMS_TO_TICKS(5000)); // 5 seconds delay
+    }
+}
 
 #endif // ICMP_H
