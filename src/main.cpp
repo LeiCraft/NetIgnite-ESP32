@@ -14,8 +14,6 @@ WebSocketsClient webSocket;
 WiFiUDP UDPClient;
 WakeOnLan WakeOnLanClient(UDPClient);
 
-// TaskHandle_t pingTaskHandle;
-
 WLANConfig wlanConfig = {
 	C_WIFI_SSID,
 	C_WIFI_PASSWORD,
@@ -49,8 +47,6 @@ void setup()
 	Utils::setClock();
 
 	Agent::setup(agentConfig);
-
-	// xTaskCreatePinnedToCore(pingTask, "Ping", 4096, NULL, 1, &pingTaskHandle, 1);
 }
  
 
