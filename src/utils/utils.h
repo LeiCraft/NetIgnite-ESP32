@@ -67,7 +67,7 @@ class Utils {
         eui64[7] = mac[5];
 
         sprintf(buffer,
-            "fe80::%02x%02x:%02x%02x:%02x%02x:%02x%02x",
+            "fe80:0000:0000:0000:%02x%02x:%02x%02x:%02x%02x:%02x%02x",
             eui64[0], eui64[1],  // first 16 bits
             eui64[2], eui64[3],  // second 16 bits
             eui64[4], eui64[5],  // third 16 bits
