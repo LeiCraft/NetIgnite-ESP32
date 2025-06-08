@@ -12,7 +12,7 @@ JsonDocument get_status(JsonDocument& input) {
     JsonDocument response;
 
     response["status"] = "ERROR";
-    response["online"] = false;
+    response["online"] = "unknown";
 
     if (!input["address"].is<const char *>()) {
         response["message"] = "Missing or invalid payload";
@@ -27,7 +27,7 @@ JsonDocument get_status(JsonDocument& input) {
             return response;
         }
 
-        response["online"] = ICMP::ping(ipAddress, 1);
+        response["online"] = ICMP::ping(ipAddress, 1) ? "online" : "offline";
 
     } else if (InputValidation::macAddress(input["address"])) {
 
@@ -37,7 +37,7 @@ JsonDocument get_status(JsonDocument& input) {
             return response;
         }
 
-        response["online"] = ICMP::ping(linkLocalAddress, 1);
+        response["online"] = ICMP::ping(linkLocalAddress, 1) ? "online" : "offline";
 
     } else {
         response["message"] = "Invalid address format: must be a valid IPv4 address or a MAC address";
@@ -45,7 +45,7 @@ JsonDocument get_status(JsonDocument& input) {
     }
 
     response["status"] = "OK";
-    response["message"] = response["online"] ? "Device is online" : "Device is offline";
+    response["message"] = "Status retrieved successfully";
     return response;
 }
 
