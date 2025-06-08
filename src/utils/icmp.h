@@ -12,21 +12,26 @@
 #include <lwip/ip6.h>
 #include <esp_netif_net_stack.h>
 
+#define PING_TIMEOUT_MS 5000
+
+struct ping_result_t {
+    bool success;
+    bool finished;
+};
+
 class ICMP {
   public:
 
-    static bool ping(IPAddress dest, size_t count = 5) {
+    static bool ping(IPAddress dest, size_t count = 1) {
 
         ip_addr_t target_addr;
         target_addr.type = IPADDR_TYPE_V4;
         target_addr.u_addr.ip4.addr = static_cast<const uint32_t>(dest);
 
-        initialize_ping(target_addr, count);
-
-        return true;
+        return do_ping(target_addr, count);
     }
 
-    static bool ping(IPv6Address dest, size_t count = 5) {
+    static bool ping(IPv6Address dest, size_t count = 1) {
         
         ip_addr_t target_addr;
         target_addr.type = IPADDR_TYPE_V6;
@@ -34,13 +39,11 @@ class ICMP {
 
         memcpy(target_addr.u_addr.ip6.addr, static_cast<const uint32_t*>(dest), sizeof(target_addr.u_addr.ip6.addr));
 
-        initialize_ping(target_addr, count);
-
-        return true;
+        return do_ping(target_addr, count);
     }
 
   private:
-    static void initialize_ping(ip_addr_t target_addr, size_t count) {
+    static bool do_ping(ip_addr_t target_addr, size_t count) {
 
         esp_ping_config_t ping_config = ESP_PING_DEFAULT_CONFIG();
         ping_config.target_addr = target_addr;
@@ -51,48 +54,36 @@ class ICMP {
         cbs.on_ping_success = on_ping_success;
         cbs.on_ping_timeout = on_ping_timeout;
         cbs.on_ping_end = on_ping_end;
-        cbs.cb_args = NULL;
+
+        ping_result_t result;
+        cbs.cb_args = &result;
+        result.success = false;
+        result.finished = false;
+
 
         esp_ping_handle_t ping;
         esp_ping_new_session(&ping_config, &cbs, &ping);
         esp_ping_start(ping);
+        
+        unsigned long start_time = millis();
+        while (!result.finished && (millis() - start_time < PING_TIMEOUT_MS)) {
+            delay(10);
+        }
+
+        return result.success;
     }
 
     static void on_ping_success(esp_ping_handle_t hdl, void *args) {
+        ping_result_t *result = static_cast<ping_result_t*>(args);
 
-        uint8_t ttl;
-        uint16_t seqno;
-        uint32_t elapsed_time, recv_len;
-        ip_addr_t target_addr;
-        esp_ping_get_profile(hdl, ESP_PING_PROF_SEQNO, &seqno, sizeof(seqno));
-        esp_ping_get_profile(hdl, ESP_PING_PROF_TTL, &ttl, sizeof(ttl));
-        esp_ping_get_profile(hdl, ESP_PING_PROF_IPADDR, &target_addr, sizeof(target_addr));
-        esp_ping_get_profile(hdl, ESP_PING_PROF_SIZE, &recv_len, sizeof(recv_len));
-        esp_ping_get_profile(hdl, ESP_PING_PROF_TIMEGAP, &elapsed_time, sizeof(elapsed_time));
-        
-        // printf("%d bytes from %s icmp_seq=%d ttl=%d time=%d ms\n", recv_len, ipaddr_ntoa((ip_addr_t*)&target_addr), seqno, ttl, elapsed_time);
-
+        result->success = true;
     }
 
-    static void on_ping_timeout(esp_ping_handle_t hdl, void *args) {
-        uint16_t seqno;
-        ip_addr_t target_addr;
-        esp_ping_get_profile(hdl, ESP_PING_PROF_SEQNO, &seqno, sizeof(seqno));
-        esp_ping_get_profile(hdl, ESP_PING_PROF_IPADDR, &target_addr, sizeof(target_addr));
-        
-        // printf("From %s icmp_seq=%d timeout\n", ipaddr_ntoa((ip_addr_t*)&target_addr), seqno);
-        
-    }
+    static void on_ping_timeout(esp_ping_handle_t hdl, void *args) {}
 
     static void on_ping_end(esp_ping_handle_t hdl, void *args) {
-        uint32_t transmitted;
-        uint32_t received;
-        uint32_t total_time_ms;
-
-        esp_ping_get_profile(hdl, ESP_PING_PROF_REQUEST, &transmitted, sizeof(transmitted));
-        esp_ping_get_profile(hdl, ESP_PING_PROF_REPLY, &received, sizeof(received));
-        esp_ping_get_profile(hdl, ESP_PING_PROF_DURATION, &total_time_ms, sizeof(total_time_ms));
-        printf("%d packets transmitted, %d received, time %dms\n", transmitted, received, total_time_ms);
+        ping_result_t *result = static_cast<ping_result_t*>(args);
+        result->finished = true;
 
         esp_ping_delete_session(hdl);
     }
